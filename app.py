@@ -61,7 +61,7 @@ def encode_inputs(data_dict):
 
 HTML_TEMPLATE = """
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="indigo">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -72,7 +72,8 @@ HTML_TEMPLATE = """
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
+        /* Base Global Theme Variables */
+        :root[data-theme="indigo"] {
             --bg: #090d16;
             --surface: rgba(17, 24, 39, 0.75);
             --surface-hover: rgba(30, 41, 59, 0.85);
@@ -82,10 +83,77 @@ HTML_TEMPLATE = """
             --primary-glow: rgba(99, 102, 241, 0.25);
             --secondary: #06b6d4;
             --accent-green: #10b981;
-            --accent-amber: #f59e0b;
             --text-heading: #f8fafc;
             --text-body: #cbd5e1;
             --text-muted: #64748b;
+            --grad-accent: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+        }
+
+        :root[data-theme="cyber"] {
+            --bg: #0d0617;
+            --surface: rgba(24, 12, 43, 0.8);
+            --surface-hover: rgba(39, 18, 71, 0.85);
+            --border: rgba(236, 72, 153, 0.18);
+            --border-highlight: rgba(236, 72, 153, 0.5);
+            --primary: #ec4899;
+            --primary-glow: rgba(236, 72, 153, 0.3);
+            --secondary: #8b5cf6;
+            --accent-green: #06b6d4;
+            --text-heading: #fdf2f8;
+            --text-body: #f472b6;
+            --text-muted: #9d4edd;
+            --grad-accent: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+        }
+
+        :root[data-theme="emerald"] {
+            --bg: #051410;
+            --surface: rgba(10, 36, 29, 0.8);
+            --surface-hover: rgba(16, 56, 45, 0.85);
+            --border: rgba(16, 185, 129, 0.15);
+            --border-highlight: rgba(16, 185, 129, 0.45);
+            --primary: #10b981;
+            --primary-glow: rgba(16, 185, 129, 0.25);
+            --secondary: #14b8a6;
+            --accent-green: #34d399;
+            --text-heading: #ecfdf5;
+            --text-body: #a7f3d0;
+            --text-muted: #059669;
+            --grad-accent: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+        }
+
+        :root[data-theme="crimson"] {
+            --bg: #140709;
+            --surface: rgba(36, 13, 17, 0.8);
+            --surface-hover: rgba(56, 20, 27, 0.85);
+            --border: rgba(239, 68, 68, 0.18);
+            --border-highlight: rgba(239, 68, 68, 0.45);
+            --primary: #ef4444;
+            --primary-glow: rgba(239, 68, 68, 0.3);
+            --secondary: #f97316;
+            --accent-green: #eab308;
+            --text-heading: #fef2f2;
+            --text-body: #fca5a5;
+            --text-muted: #b91c1c;
+            --grad-accent: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+        }
+
+        :root[data-theme="mono"] {
+            --bg: #111111;
+            --surface: rgba(26, 26, 26, 0.8);
+            --surface-hover: rgba(40, 40, 40, 0.85);
+            --border: rgba(255, 255, 255, 0.12);
+            --border-highlight: rgba(255, 255, 255, 0.35);
+            --primary: #e2e8f0;
+            --primary-glow: rgba(255, 255, 255, 0.15);
+            --secondary: #94a3b8;
+            --accent-green: #38bdf8;
+            --text-heading: #ffffff;
+            --text-body: #cbd5e1;
+            --text-muted: #64748b;
+            --grad-accent: linear-gradient(135deg, #f8fafc 0%, #64748b 100%);
+        }
+
+        :root {
             --radius-lg: 20px;
             --radius-md: 12px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -95,15 +163,13 @@ HTML_TEMPLATE = """
         
         body {
             background-color: var(--bg);
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: var(--text-body);
             min-height: 100vh;
             padding: 1.5rem 2rem;
             display: flex;
             flex-direction: column;
+            transition: var(--transition);
         }
 
         /* Top Navigation */
@@ -126,13 +192,14 @@ HTML_TEMPLATE = """
             width: 48px;
             height: 48px;
             border-radius: var(--radius-md);
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--grad-accent);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
             color: white;
             box-shadow: 0 0 20px var(--primary-glow);
+            transition: var(--transition);
         }
 
         .brand-text h1 {
@@ -152,8 +219,52 @@ HTML_TEMPLATE = """
         .nav-controls {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.2rem;
         }
+
+        /* Theme Selector Pill */
+        .theme-selector-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 0.35rem 0.8rem;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .theme-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-swatch:hover {
+            transform: scale(1.15);
+        }
+
+        .theme-swatch.active {
+            border-color: var(--text-heading);
+            box-shadow: 0 0 10px var(--primary-glow);
+            transform: scale(1.2);
+        }
+
+        .theme-swatch[data-theme="indigo"] { background: #6366f1; }
+        .theme-swatch[data-theme="cyber"] { background: #ec4899; }
+        .theme-swatch[data-theme="emerald"] { background: #10b981; }
+        .theme-swatch[data-theme="crimson"] { background: #ef4444; }
+        .theme-swatch[data-theme="mono"] { background: #cbd5e1; }
 
         .currency-badge {
             background: var(--surface);
@@ -192,6 +303,7 @@ HTML_TEMPLATE = """
         @media (max-width: 1080px) {
             .workspace { grid-template-columns: 1fr; }
             header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+            .nav-controls { flex-wrap: wrap; }
         }
 
         /* Glassmorphic Panel Cards */
@@ -205,6 +317,7 @@ HTML_TEMPLATE = """
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+            transition: var(--transition);
         }
 
         .panel-header {
@@ -288,7 +401,7 @@ HTML_TEMPLATE = """
         }
 
         .btn-predict {
-            background: linear-gradient(135deg, var(--primary), #4f46e5);
+            background: var(--grad-accent);
             color: white;
             border: none;
             border-radius: var(--radius-md);
@@ -312,13 +425,14 @@ HTML_TEMPLATE = """
 
         /* Right Panel: Telemetry & Results */
         .valuation-banner {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(6, 182, 212, 0.15));
+            background: linear-gradient(135deg, var(--surface-hover), var(--primary-glow));
             border: 1px solid var(--border-highlight);
             border-radius: var(--radius-lg);
             padding: 2rem;
             text-align: center;
             position: relative;
             overflow: hidden;
+            transition: var(--transition);
         }
 
         .valuation-badge {
@@ -370,6 +484,7 @@ HTML_TEMPLATE = """
             border-radius: var(--radius-md);
             padding: 1rem;
             text-align: center;
+            transition: var(--transition);
         }
 
         .metric-label {
@@ -413,6 +528,17 @@ HTML_TEMPLATE = """
         </div>
 
         <div class="nav-controls">
+            <!-- Theme Selection Pill -->
+            <div class="theme-selector-box">
+                <span class="theme-label"><i class="fa-solid fa-palette"></i> Theme:</span>
+                <button type="button" class="theme-swatch active" data-theme="indigo" title="Deep Indigo"></button>
+                <button type="button" class="theme-swatch" data-theme="cyber" title="Cyber Neon"></button>
+                <button type="button" class="theme-swatch" data-theme="emerald" title="Emerald Matrix"></button>
+                <button type="button" class="theme-swatch" data-theme="crimson" title="Crimson Carbon"></button>
+                <button type="button" class="theme-swatch" data-theme="mono" title="Monochrome Titanium"></button>
+            </div>
+
+            <!-- Currency Selector -->
             <div class="currency-badge">
                 <i class="fa-solid fa-globe"></i>
                 <span>Currency:</span>
@@ -587,7 +713,7 @@ HTML_TEMPLATE = """
     </div>
 
     <footer>
-        AutoValuate AI &copy; 2026 &bull; High Precision Valuation Architecture &bull; Ready for Vercel Deployment
+        AutoValuate AI &copy; 2026 &bull; Multi-Themed High Precision Valuation Architecture &bull; Ready for Vercel
     </footer>
 
     <script>
@@ -600,6 +726,22 @@ HTML_TEMPLATE = """
             suv: { Make: 'Ford', Year: 2023, Engine_Size: 2.3, Mileage: 24000, Horsepower: 300, Torque: 420, Fuel_Type: 'Petrol', Transmission: 'Automatic', Body_Type: 'SUV', Drivetrain: 'AWD', Accident_History: 'None', Service_History: 'Full', Fuel_Efficiency: 11.5, Owners: 1 },
             luxury: { Make: 'BMW', Year: 2022, Engine_Size: 3.0, Mileage: 31000, Horsepower: 382, Torque: 500, Fuel_Type: 'Petrol', Transmission: 'Automatic', Body_Type: 'Sedan', Drivetrain: 'RWD', Accident_History: 'None', Service_History: 'Full', Fuel_Efficiency: 12.0, Owners: 1 }
         };
+
+        function getVarColor(varName) {
+            return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+        }
+
+        // Multi-Color Theme Switching System
+        const themeSwatches = document.querySelectorAll('.theme-swatch');
+        themeSwatches.forEach(swatch => {
+            swatch.addEventListener('click', () => {
+                themeSwatches.forEach(s => s.classList.remove('active'));
+                swatch.classList.add('active');
+                const selectedTheme = swatch.getAttribute('data-theme');
+                document.documentElement.setAttribute('data-theme', selectedTheme);
+                updateChartStyling();
+            });
+        });
 
         function loadPreset(name) {
             const data = presets[name];
@@ -638,11 +780,11 @@ HTML_TEMPLATE = """
                     datasets: [{
                         label: 'Projected Valuation',
                         data: [currentUSDPrice, currentUSDPrice * 0.88, currentUSDPrice * 0.78, currentUSDPrice * 0.69],
-                        borderColor: '#06b6d4',
+                        borderColor: getVarColor('--secondary') || '#06b6d4',
                         backgroundColor: 'rgba(6, 182, 212, 0.12)',
                         fill: true,
                         tension: 0.35,
-                        pointBackgroundColor: '#6366f1',
+                        pointBackgroundColor: getVarColor('--primary') || '#6366f1',
                         pointBorderColor: '#ffffff',
                         pointRadius: 4
                     }]
@@ -657,6 +799,15 @@ HTML_TEMPLATE = """
                     }
                 }
             });
+        }
+
+        function updateChartStyling() {
+            if (!chartInstance) return;
+            const primaryColor = getVarColor('--primary');
+            const secondaryColor = getVarColor('--secondary');
+            chartInstance.data.datasets[0].borderColor = secondaryColor;
+            chartInstance.data.datasets[0].pointBackgroundColor = primaryColor;
+            chartInstance.update();
         }
 
         function updateProjectionChart(currencyKey) {
